@@ -18,8 +18,9 @@ public class FacesDetectedEvent extends Event<FacesDetectedEvent> {
   private static final Pools.SynchronizedPool<FacesDetectedEvent> EVENTS_POOL =
       new Pools.SynchronizedPool<>(3);
 
-  private double mScaleX;
-  private double mScaleY;
+  private double mScale;
+  private int mShiftX;
+  private int mShiftY;
   private SparseArray<Face> mFaces;
   private ImageDimensions mImageDimensions;
 
@@ -29,14 +30,15 @@ public class FacesDetectedEvent extends Event<FacesDetectedEvent> {
       int viewTag,
       SparseArray<Face> faces,
       ImageDimensions dimensions,
-      double scaleX,
-      double scaleY
+      double scale,
+      int shiftX,
+      int shiftY
   ) {
     FacesDetectedEvent event = EVENTS_POOL.acquire();
     if (event == null) {
       event = new FacesDetectedEvent();
     }
-    event.init(viewTag, faces, dimensions, scaleX, scaleY);
+    event.init(viewTag, faces, dimensions, scale, shiftX, shiftY);
     return event;
   }
 
@@ -44,14 +46,16 @@ public class FacesDetectedEvent extends Event<FacesDetectedEvent> {
       int viewTag,
       SparseArray<Face> faces,
       ImageDimensions dimensions,
-      double scaleX,
-      double scaleY
+      double scale,
+      int shiftX,
+      int shiftY
   ) {
     super.init(viewTag);
     mFaces = faces;
     mImageDimensions = dimensions;
-    mScaleX = scaleX;
-    mScaleY = scaleY;
+    mScale = scale;
+    mShiftX = shiftX;
+    mShiftY = shiftY;
   }
 
   /**
@@ -83,9 +87,9 @@ public class FacesDetectedEvent extends Event<FacesDetectedEvent> {
 
     for(int i = 0; i < mFaces.size(); i++) {
       Face face = mFaces.valueAt(i);
-      WritableMap serializedFace = FaceDetectorUtils.serializeFace(face, mScaleX, mScaleY);
+      WritableMap serializedFace = FaceDetectorUtils.serializeFace(face, mScale, mShiftX, mShiftY);
       if (mImageDimensions.getFacing() == CameraView.FACING_FRONT) {
-        serializedFace = FaceDetectorUtils.rotateFaceX(serializedFace, mImageDimensions.getWidth(), mScaleX);
+        serializedFace = FaceDetectorUtils.rotateFaceX(serializedFace, mImageDimensions.getWidth(), mScale);
       } else {
         serializedFace = FaceDetectorUtils.changeAnglesDirection(serializedFace);
       }
