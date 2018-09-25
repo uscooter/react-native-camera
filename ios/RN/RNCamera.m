@@ -588,7 +588,6 @@ static NSDictionary *defaultFaceDetectorOptions = nil;
         }
 
         // self.session.sessionPreset = AVCaptureSessionPresetPhoto;
-        self.session.sessionPreset = AVCaptureSessionPresetPhoto;
 
         AVCaptureStillImageOutput *stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
         if ([self.session canAddOutput:stillImageOutput]) {
