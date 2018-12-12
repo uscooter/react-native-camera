@@ -200,15 +200,27 @@ public class RNCameraViewHelper {
   ) {
     float density = view.getResources().getDisplayMetrics().density;
 
-    double scaleX = (double) view.getWidth() / (dimensions.getWidth() * density);
-    double scaleY = (double) view.getHeight() / (dimensions.getHeight() * density);
+    double viewRatio = (double) view.getWidth() / view.getHeight();
+    double dimensionsRatio = (double) dimensions.getWidth() / dimensions.getHeight();
+
+    int shiftX = 0;
+    int shiftY = 0;
+
+    if (viewRatio < dimensionsRatio) {
+      shiftX = (int) ((dimensions.getWidth() - (double) dimensions.getHeight() * viewRatio) / 2);
+    } else if (viewRatio > dimensionsRatio) {
+      shiftY = (int) ((dimensions.getHeight() - (double) dimensions.getWidth() * viewRatio) / 2);
+    }
+
+    double scale = (double) view.getWidth() / ((dimensions.getWidth() - shiftX * 2) * density);
 
     FacesDetectedEvent event = FacesDetectedEvent.obtain(
         view.getId(),
         faces,
         dimensions,
-        scaleX,
-        scaleY
+        scale,
+        shiftX,
+        shiftY
     );
 
     ReactContext reactContext = (ReactContext) view.getContext();
