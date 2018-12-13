@@ -1189,4 +1189,10 @@ static NSDictionary *defaultFaceDetectorOptions = nil;
     return self.movieFileOutput.isRecording;
 }
 
+- (bool)hasFlash
+{
+    AVCaptureDevice *device = [self.videoCaptureDeviceInput device];
+    return [device hasFlash] || [device hasTorch];
+}
+
 @end

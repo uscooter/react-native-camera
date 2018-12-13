@@ -76,6 +76,7 @@
 - (void)onPictureSaved:(NSDictionary *)event;
 - (void)onText:(NSDictionary *)event;
 - (bool)isRecording;
+- (bool)hasFlash;
 
 @end
 
