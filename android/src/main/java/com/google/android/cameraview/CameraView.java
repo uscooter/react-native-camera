@@ -473,6 +473,10 @@ public class CameraView extends FrameLayout {
         return mImpl.getFlash();
     }
 
+    public boolean hasFlash() {
+        return mImpl.hasFlash();
+    }
+
     public void setFocusDepth(float value) {
         mImpl.setFocusDepth(value);
     }

@@ -620,7 +620,8 @@ static NSDictionary *defaultFaceDetectorOptions = nil;
         // Default video quality AVCaptureSessionPresetHigh if non is provided
         AVCaptureSessionPreset preset = ([self defaultVideoQuality]) ? [RNCameraUtils captureSessionPresetForVideoResolution:[[self defaultVideoQuality] integerValue]] : AVCaptureSessionPresetHigh;
 
-        self.session.sessionPreset = preset == AVCaptureSessionPresetHigh ? AVCaptureSessionPresetPhoto: preset;
+        // comment out in case of problems under iOS
+        // self.session.sessionPreset = preset == AVCaptureSessionPresetHigh ? AVCaptureSessionPresetPhoto: preset;
 
         AVCaptureStillImageOutput *stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
         if ([self.session canAddOutput:stillImageOutput]) {
@@ -976,7 +977,7 @@ static NSDictionary *defaultFaceDetectorOptions = nil;
         void (^resolveBlock)(void) = ^() {
             self.videoRecordedResolve(result);
         };
-        
+
         result[@"uri"] = outputFileURL.absoluteString;
         result[@"videoOrientation"] = @([self.orientation integerValue]);
         result[@"deviceOrientation"] = @([self.deviceOrientation integerValue]);
@@ -1187,6 +1188,12 @@ static NSDictionary *defaultFaceDetectorOptions = nil;
 
 - (bool)isRecording {
     return self.movieFileOutput.isRecording;
+}
+
+- (bool)hasFlash
+{
+    AVCaptureDevice *device = [self.videoCaptureDeviceInput device];
+    return [device hasFlash] || [device hasTorch];
 }
 
 @end
