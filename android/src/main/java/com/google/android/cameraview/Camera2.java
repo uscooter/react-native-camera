@@ -468,6 +468,11 @@ class Camera2 extends CameraViewImpl implements MediaRecorder.OnInfoListener, Me
     }
 
     @Override
+    boolean hasFlash() {
+        return mCameraCharacteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+    }
+
+    @Override
     void takePicture(ReadableMap options) {
         mCaptureCallback.setOptions(options);
 

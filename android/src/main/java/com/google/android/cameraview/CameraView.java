@@ -406,7 +406,7 @@ public class CameraView extends FrameLayout {
     public AspectRatio getAspectRatio() {
         return mImpl.getAspectRatio();
     }
-    
+
     /**
      * Gets all the picture sizes for particular ratio supported by the current camera.
      *
@@ -415,7 +415,7 @@ public class CameraView extends FrameLayout {
     public SortedSet<Size> getAvailablePictureSizes(@NonNull AspectRatio ratio) {
         return mImpl.getAvailablePictureSizes(ratio);
     }
-    
+
     /**
      * Sets the size of taken pictures.
      *
@@ -424,7 +424,7 @@ public class CameraView extends FrameLayout {
     public void setPictureSize(@NonNull Size size) {
         mImpl.setPictureSize(size);
     }
-    
+
     /**
      * Gets the size of pictures that will be taken.
      */
@@ -482,6 +482,10 @@ public class CameraView extends FrameLayout {
         return mImpl.getCameraOrientation();
     }
 
+    public boolean hasFlash() {
+        return mImpl.hasFlash();
+    }
+
     public void setFocusDepth(float value) {
         mImpl.setFocusDepth(value);
     }
@@ -532,11 +536,11 @@ public class CameraView extends FrameLayout {
     public void stopRecording() {
         mImpl.stopRecording();
     }
-    
+
     public void resumePreview() {
         mImpl.resumePreview();
     }
-    
+
     public void pausePreview() {
         mImpl.pausePreview();
     }
@@ -636,7 +640,7 @@ public class CameraView extends FrameLayout {
         int whiteBalance;
 
         boolean scanning;
-        
+
         Size pictureSize;
 
         @SuppressWarnings("WrongConstant")

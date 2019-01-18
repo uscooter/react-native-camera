@@ -208,7 +208,7 @@ public class CameraModule extends ReactContextBaseJavaModule {
       }
     });
   }
-    
+
     @ReactMethod
     public void pausePreview(final int viewTag) {
         final ReactApplicationContext context = getReactApplicationContext();
@@ -217,7 +217,7 @@ public class CameraModule extends ReactContextBaseJavaModule {
             @Override
             public void execute(NativeViewHierarchyManager nativeViewHierarchyManager) {
                 final RNCameraView cameraView;
-                
+
                 try {
                     cameraView = (RNCameraView) nativeViewHierarchyManager.resolveView(viewTag);
                     if (cameraView.isCameraOpened()) {
@@ -229,7 +229,7 @@ public class CameraModule extends ReactContextBaseJavaModule {
             }
         });
     }
-    
+
     @ReactMethod
     public void resumePreview(final int viewTag) {
         final ReactApplicationContext context = getReactApplicationContext();
@@ -238,7 +238,7 @@ public class CameraModule extends ReactContextBaseJavaModule {
             @Override
             public void execute(NativeViewHierarchyManager nativeViewHierarchyManager) {
                 final RNCameraView cameraView;
-                
+
                 try {
                     cameraView = (RNCameraView) nativeViewHierarchyManager.resolveView(viewTag);
                     if (cameraView.isCameraOpened()) {
@@ -353,7 +353,7 @@ public class CameraModule extends ReactContextBaseJavaModule {
             @Override
             public void execute(NativeViewHierarchyManager nativeViewHierarchyManager) {
                 final RNCameraView cameraView;
-                
+
                 try {
                     cameraView = (RNCameraView) nativeViewHierarchyManager.resolveView(viewTag);
                     WritableArray result = Arguments.createArray();
@@ -389,5 +389,27 @@ public class CameraModule extends ReactContextBaseJavaModule {
             e.printStackTrace();
         }
         promise.resolve(false);
+    }
+
+    @ReactMethod
+    public void hasFlash(final int viewTag, final Promise promise) {
+        final ReactApplicationContext context = getReactApplicationContext();
+        UIManagerModule uiManager = context.getNativeModule(UIManagerModule.class);
+        uiManager.addUIBlock(new UIBlock() {
+            @Override
+            public void execute(NativeViewHierarchyManager nativeViewHierarchyManager) {
+                final RNCameraView cameraView;
+                try {
+                    cameraView = (RNCameraView) nativeViewHierarchyManager.resolveView(viewTag);
+                    if (cameraView.isCameraOpened()) {
+                        promise.resolve(cameraView.hasFlash());
+                    } else {
+                        promise.reject("E_CAMERA_UNAVAILABLE", "Camera is not running");
+                    }
+                } catch (Exception e) {
+                    promise.reject("E_CAMERA_BAD_VIEWTAG", "hasFlash: Expected a Camera component");
+                }
+            }
+        });
     }
 }

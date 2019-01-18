@@ -18,10 +18,10 @@ public class FaceDetectorUtils {
   };
 
   public static WritableMap serializeFace(Face face) {
-    return serializeFace(face, 1, 1);
+    return serializeFace(face, 1, 0, 0);
   }
 
-  public static WritableMap serializeFace(Face face, double scaleX, double scaleY) {
+  public static WritableMap serializeFace(Face face, double scale, int shiftX, int shiftY) {
     WritableMap encodedFace = Arguments.createMap();
 
     encodedFace.putInt("faceID", face.getId());
@@ -39,16 +39,16 @@ public class FaceDetectorUtils {
     }
 
     for(Landmark landmark : face.getLandmarks()) {
-      encodedFace.putMap(landmarkNames[landmark.getType()], mapFromPoint(landmark.getPosition(), scaleX, scaleY));
+      encodedFace.putMap(landmarkNames[landmark.getType()], mapFromPoint(landmark.getPosition(), scale, shiftX, shiftY));
     }
 
     WritableMap origin = Arguments.createMap();
-    origin.putDouble("x", face.getPosition().x * scaleX);
-    origin.putDouble("y", face.getPosition().y * scaleY);
+    origin.putDouble("x", (face.getPosition().x - shiftX) * scale);
+    origin.putDouble("y", (face.getPosition().y - shiftY) * scale);
 
     WritableMap size = Arguments.createMap();
-    size.putDouble("width", face.getWidth() * scaleX);
-    size.putDouble("height", face.getHeight() * scaleY);
+    size.putDouble("width", face.getWidth() * scale);
+    size.putDouble("height", face.getHeight() * scale);
 
     WritableMap bounds = Arguments.createMap();
     bounds.putMap("origin", origin);
@@ -59,11 +59,11 @@ public class FaceDetectorUtils {
     return encodedFace;
   }
 
-  public static WritableMap rotateFaceX(WritableMap face, int sourceWidth, double scaleX) {
+  public static WritableMap rotateFaceX(WritableMap face, int sourceWidth, double scale) {
     ReadableMap faceBounds = face.getMap("bounds");
 
     ReadableMap oldOrigin = faceBounds.getMap("origin");
-    WritableMap mirroredOrigin = positionMirroredHorizontally(oldOrigin, sourceWidth, scaleX);
+    WritableMap mirroredOrigin = positionMirroredHorizontally(oldOrigin, sourceWidth, scale);
 
     double translateX = -faceBounds.getMap("size").getDouble("width");
     WritableMap translatedMirroredOrigin = positionTranslatedHorizontally(mirroredOrigin, translateX);
@@ -75,7 +75,7 @@ public class FaceDetectorUtils {
     for (String landmarkName : landmarkNames) {
       ReadableMap landmark = face.hasKey(landmarkName) ? face.getMap(landmarkName) : null;
       if (landmark != null) {
-        WritableMap mirroredPosition = positionMirroredHorizontally(landmark, sourceWidth, scaleX);
+        WritableMap mirroredPosition = positionMirroredHorizontally(landmark, sourceWidth, scale);
         face.putMap(landmarkName, mirroredPosition);
       }
     }
@@ -91,10 +91,10 @@ public class FaceDetectorUtils {
     return face;
   }
 
-  public static WritableMap mapFromPoint(PointF point, double scaleX, double scaleY) {
+  public static WritableMap mapFromPoint(PointF point, double scale, int shiftX, int shiftY) {
     WritableMap map = Arguments.createMap();
-    map.putDouble("x", point.x * scaleX);
-    map.putDouble("y", point.y * scaleY);
+    map.putDouble("x", (point.x - shiftX) * scale);
+    map.putDouble("y", (point.y - shiftY) * scale);
     return map;
   }
 
@@ -105,16 +105,16 @@ public class FaceDetectorUtils {
     return newPosition;
   }
 
-  public static WritableMap positionMirroredHorizontally(ReadableMap position, int containerWidth, double scaleX) {
+  public static WritableMap positionMirroredHorizontally(ReadableMap position, int containerWidth, double scale) {
     WritableMap newPosition = Arguments.createMap();
     newPosition.merge(position);
-    newPosition.putDouble("x", valueMirroredHorizontally(position.getDouble("x"), containerWidth, scaleX));
+    newPosition.putDouble("x", valueMirroredHorizontally(position.getDouble("x"), containerWidth, scale));
     return newPosition;
   }
 
-  public static double valueMirroredHorizontally(double elementX, int containerWidth, double scaleX) {
-    double originalX = elementX / scaleX;
+  public static double valueMirroredHorizontally(double elementX, int containerWidth, double scale) {
+    double originalX = elementX / scale;
     double mirroredX = containerWidth - originalX;
-    return mirroredX * scaleX;
+    return mirroredX * scale;
   }
 }

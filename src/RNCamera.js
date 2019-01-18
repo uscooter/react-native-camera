@@ -534,6 +534,15 @@ export default class Camera extends React.Component<PropsType, StateType> {
     return isAuthorized ? CameraStatus.READY : CameraStatus.NOT_AUTHORIZED;
   };
 
+  hasFlash = () => {
+    if (Platform.OS === 'windows') {
+      return CameraManager.hasFlash({
+        view: this._cameraHandle,
+      });
+    }
+    return CameraManager.hasFlash(this._cameraHandle);
+  }
+
   // FaCC = Function as Child Component;
   hasFaCC = (): * => typeof this.props.children === 'function';
 
